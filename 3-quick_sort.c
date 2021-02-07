@@ -2,18 +2,41 @@
 #include "sort.h"
 
 /**
- * swap_elems - swaps the elements of the array
- * @m: element to be swapped
- * @n: element to be swapped
+ * quick_sort - sorts an array of integers in ascending order
+ * @array: array to be sorted
+ * @size: size of the array
  * Return: Nothing
  */
-void swap_elems(int *m, int *n)
+void quick_sort(int *array, size_t size)
 {
-	int temp;
+	int lo = 0;
+	int hi = size - 1;
 
-	temp = *m;
-	*m = *n;
-	*n = temp;
+	if (array == NULL || size == 0)
+	{
+		return;
+	}
+	sort_elems(array, lo, hi, size);
+}
+
+/**
+ * sort_elems - sort integers using low/high
+ * @array: array of integers to be sorted
+ * @low: element to the left of the pivot
+ * @high: element to the right of the pivot
+ * @size: size of array
+ * Return: Nothing
+ */
+void sort_elems(int *array, int low, int high, size_t size)
+{
+	int aux;
+
+	if (low < high)
+	{
+		aux = lomuto_partition(array, low, high, size);
+		sort_elems(array, low, aux - 1, size);
+		sort_elems(array, aux + 1, high, size);
+	}
 }
 
 /**
@@ -51,38 +74,17 @@ int lomuto_partition(int *array, int low, int high, size_t size)
 }
 
 /**
- * sort_elems - sort integers using low/high
- * @array: array of integers to be sorted
- * @low: element to the left of the pivot
- * @high: element to the right of the pivot
- * @size: size of array
+ * swap_elems - swaps the elements of the array
+ * @m: element to be swapped
+ * @n: element to be swapped
  * Return: Nothing
  */
-void sort_elems(int *array, int low, int high, size_t size)
+void swap_elems(int *m, int *n)
 {
-	int aux;
+	int temp;
 
-	if (low < high)
-	{
-		aux = lomuto_partition(array, low, high, size);
-		sort_elems(array, low, aux - 1, size);
-		sort_elems(array, aux + 1, high, size);
-	}
+	temp = *m;
+	*m = *n;
+	*n = temp;
 }
-/**
- * quick_sort - sorts an array of integers in ascending order
- * @array: array to be sorted
- * @size: size of the array
- * Return: Nothing
- */
-void quick_sort(int *array, size_t size)
-{
-	int lo = 0;
-	int hi = size - 1;
 
-	if (array == NULL || size == 0)
-	{
-		return;
-	}
-	sort_elems(array, lo, hi, size);
-}
