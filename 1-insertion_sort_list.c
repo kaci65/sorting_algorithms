@@ -2,47 +2,33 @@
 #include "sort.h"
 
 /**
- * node_sorted_insert - insert a new node through sorting
+ * swap_dnodes - insert a new node through sorting
  * @head: pointer to head of listint_t elements
  * @new_node: node to be inserted
+ * @curr: current node
  * Return: Nothing
  */
-void node_sorted_insert(listint_t **head, listint_t *new_node)
+void swap_dnodes(listint_t **head, listint_t *curr, listint_t *new_node)
 {
-	listint_t *curr;
 
-	/* list is empty */
-	if (*head == NULL)
+	/* swap head node */
+	if (curr->prev == NULL)
 	{
-		*head = new_node;
-	}
-	/* if node to be added at beginning of list */
-	else if ((*head)->n >= new_node->n)
-	{
-		new_node->next = *head;
-		new_node->next->prev = new_node;
-		*head = new_node;
+		*head = curr->next;
 	}
 	else
 	{
-		curr = *head;
-		/* find node after which new node will be inserted */
-		while (curr->next != NULL && curr->next->n < new_node->n)
-		{
-			curr = curr->next;
-		}
-		/* link nodes */
-		new_node->next = curr->next;
-
-		/* if new node not inserted at the end of list */
-		if (curr->next != NULL)
-		{
-			new_node->next->prev = new_node;
-		}
-		curr->next = new_node;
-		new_node->prev = curr;
+		curr->prev->next = new_node;
 	}
 
+	if (new_node->next)
+	{
+		new_node->next->prev = curr;
+	}
+	new_node->prev = curr->prev;
+	curr->next = new_node->next;
+	curr->prev = new_node;
+	new_node->next = curr;
 }
 /**
  * insertion_sort_list - sorts doubly linked list of ints in ascending order
@@ -51,28 +37,32 @@ void node_sorted_insert(listint_t **head, listint_t *new_node)
  */
 void insertion_sort_list(listint_t **list)
 {
-	listint_t *sort_nodes, *current, *next;
+	listint_t *curr, *tmp;
 
-	sort_nodes = NULL;
-	current = *list;
-
-	while (current != NULL)
+	if (*list == NULL || list == NULL)
 	{
-		/* store tmp node */
-		next = current->next;
-
-		/* current as new node for insertion */
-		current->prev = current->next = NULL;
-
-		/*insert current in sorted list */
-		node_sorted_insert(&sort_nodes, current);
-
-		/* print doubly linked list */
-		print_list(*list);
-
-		/* update current node */
-                current = next;
+		return;
 	}
-	/* head node(list) pointing to sorted list */
-	*list = sort_nodes;
+	curr = *list;
+
+	while (curr->next)
+	{
+		if (curr->n > curr->next->n)
+		{
+			swap_dnodes(list, curr, curr->next);
+			print_list(*list);
+			tmp = curr->prev;
+
+			while (tmp->prev && tmp->n < tmp->prev->n)
+			{
+				swap_dnodes(list, tmp->prev, tmp);
+				print_list(*list);
+			}
+		}
+		else
+		{
+			/* update current node */
+                	curr = curr->next;
+		}
+	}
 }
