@@ -62,7 +62,7 @@ void insertion_sort_list(listint_t **list)
 		else
 		{
 			/* update current node */
-                	curr = curr->next;
+			curr = curr->next;
 		}
 	}
 }
